@@ -26,7 +26,7 @@ export const Navbar = () => {
         {status === 'unauthenticated' && (
           <>
             <Button variant="ghost" size="sm">
-              Log in
+              <Link href="/login">Login</Link>
             </Button>
             <Button size="sm">Get Notion free</Button>
           </>

@@ -8,6 +8,7 @@
   "words": [
     "clsx",
     "commitlint",
+    "hookform",
     "lucide",
     "nextauth",
     "signin",
