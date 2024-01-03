@@ -5,7 +5,14 @@
   // language - current active spelling language
   "language": "en",
   // words - list of words to be always considered correct
-  "words": ["commitlint", "tailwindcss"],
+  "words": [
+    "clsx",
+    "commitlint",
+    "lucide",
+    "nextauth",
+    "signin",
+    "tailwindcss"
+  ],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.
   "flagWords": []
