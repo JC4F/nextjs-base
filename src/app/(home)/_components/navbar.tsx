@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { useScrollTop } from '@/hooks';
 import { cn } from '@/lib/utils';
 
-import { Button, ModeToggle, Spinner } from '@/components';
+import { Button, ModeToggle, Spinner, UserAccountNav } from '@/components';
 import { useSession } from 'next-auth/react';
 import { Logo } from './logo';
 
 export const Navbar = () => {
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const scrolled = useScrollTop();
 
   return (
@@ -26,13 +26,20 @@ export const Navbar = () => {
         {status === 'unauthenticated' && (
           <>
             <Button variant="ghost" size="sm">
-              Log in
+              <Link href="/login">Login</Link>
             </Button>
             <Button size="sm">Get Notion free</Button>
           </>
         )}
         {status === 'authenticated' && (
           <>
+            <UserAccountNav
+              user={{
+                name: session.user?.name,
+                image: session.user?.image,
+                email: session.user?.email,
+              }}
+            />
             <Button variant="ghost" size="sm" asChild>
               <Link href="/documents">Enter Notion</Link>
             </Button>
