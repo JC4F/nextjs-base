@@ -106,7 +106,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         className={cn(buttonVariants({ variant: 'outline' }))}
         onClick={() => {
           setIsGoogleLoading(true);
-          signIn('github');
+          signIn('google');
         }}
         disabled={isLoading || isGitHubLoading || isGoogleLoading}
       >
@@ -115,7 +115,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         ) : (
           <Icons.google className="mr-2 h-4 w-4" />
         )}{' '}
-        Github
+        Google
       </button>
     </div>
   );
