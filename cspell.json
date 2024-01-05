@@ -4,17 +4,22 @@
   "version": "0.2",
   // language - current active spelling language
   "language": "en",
-  // words - list of words to be always considered correct
-  "words": [
-    "clsx",
-    "commitlint",
-    "hookform",
-    "lucide",
-    "nextauth",
-    "signin",
-    "tailwindcss",
-    "Vercel"
+  "ignorePaths": [
+    "node_modules/",
+    "dist/",
+    "build/",
+    "cspell.json",
+    "Dockerfile",
+    "*.log",
+    "*.svg",
+    "tsconfig.json",
+    "pnpm-lock.yaml",
+    "node.js.yml",
+    "vercel.yml",
+    ".gitignore"
   ],
+  // words - list of words to be always considered correct
+  "words": ["clsx", "commitlint", "hookform", "lucide", "nextauth", "signin", "tailwindcss", "Vercel"],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.
   "flagWords": []
