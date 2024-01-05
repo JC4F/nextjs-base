@@ -1,21 +1,19 @@
-import { getToken } from "next-auth/jwt"
-import { withAuth } from "next-auth/middleware"
-import { NextResponse } from "next/server"
+import { getToken } from 'next-auth/jwt';
+import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
 
 export default withAuth(
   async function middleware(req) {
-    const token = await getToken({ req })
-    const isAuth = !!token
-    const isAuthPage =
-      req.nextUrl.pathname.startsWith("/login") ||
-      req.nextUrl.pathname.startsWith("/register")
+    const token = await getToken({ req, secret: process.env.JWT_SECRET });
+    const isAuth = !!token;
+    const isAuthPage = req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/register');
 
     if (isAuthPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL("/", req.url))
+        return NextResponse.redirect(new URL('/', req.url));
       }
 
-      return null
+      return null;
     }
 
     if (!isAuth) {
@@ -24,9 +22,9 @@ export default withAuth(
         from += req.nextUrl.search;
       }
 
-      return NextResponse.redirect(
-        new URL(`/login?from=${encodeURIComponent(from)}`, req.url)
-      );
+      if (from !== '/') {
+        return NextResponse.redirect(new URL(`/login?from=${encodeURIComponent(from)}`, req.url));
+      } else return NextResponse.redirect(new URL(`/login`, req.url));
     }
   },
   {
@@ -35,12 +33,12 @@ export default withAuth(
         // This is a work-around for handling redirect on auth pages.
         // We return true here so that the middleware function above
         // is always called.
-        return true
+        return true;
       },
     },
-  }
-)
+  },
+);
 
 export const config = {
-  matcher: ["/client/:path*", "/server/:path*", "/login", "/register"],
-}
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};

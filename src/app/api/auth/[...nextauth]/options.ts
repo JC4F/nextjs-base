@@ -1,43 +1,99 @@
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
 
 export const options: NextAuthOptions = {
+  session: {
+    strategy: 'jwt',
+  },
+  secret: process.env.JWT_SECRET,
+  pages: {
+    signIn: '/login',
+    // signOut: "/singOut",
+  },
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: 'Credentials',
       credentials: {
-        username: {
-          label: 'Username:',
-          type: 'text',
-          placeholder: 'your-cool-username',
+        email: {
+          type: 'email',
+          placeholder: 'jsmith@example.com',
         },
-        password: {
-          label: 'Password:',
-          type: 'password',
-          placeholder: 'your-awesome-password',
-        },
+        password: { type: 'password' },
       },
-      async authorize(credentials) {
-        // This is where you need to retrieve user data
-        // to verify with credentials
-        // Docs: https://next-auth.js.org/configuration/providers/credentials
-        const user = { id: '42', name: 'peter', password: '123456' };
+      async authorize(credentials, _req) {
+        const payload = {
+          email: credentials?.email,
+          password: credentials?.password,
+        };
 
-        if (credentials?.username === user.name && credentials?.password === user.password) {
-          return user;
-        } else {
-          return null;
-        }
+        console.log(payload);
+
+        return {
+          id: 'key',
+          name: 'Peter',
+          email: 'Peter@gmail.com',
+          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmuaMi2wKWYcKVIIxM1S5mdLX-i7TveCDmVZjBy2qyKw&s',
+        };
+
+        // const res = await fetch('https://cloudcoders.azurewebsites.net/api/tokens', {
+        //   method: 'POST',
+        //   body: JSON.stringify(payload),
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        // });
+
+        // const user = await res.json();
+        // if (!res.ok) {
+        //   throw new Error(user.message);
+        // }
+        // // If no error and we have user data, return it
+        // if (res.ok && user) {
+        //   return user;
+        // }
+
+        // // Return null if user data could not be retrieved
+        // return null;
       },
     }),
   ],
-  pages: {
-    signIn: '/sign-in',
-    signOut: '/sign-out',
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+
+      return baseUrl;
+    },
+    // async jwt({ token, user }) {
+    //   // fetch api to be with token return from sign in to update jwt
+    //   return {
+    //     id: '',
+    //     name: '',
+    //     email: '',
+    //     picture: '',
+    //   };
+    // },
+    // async session({ token, session }) {
+    //   if (token) {
+    //     // @ts-ignore
+    //     session.user.id = token.id;
+    //     // @ts-ignore
+    //     session.user.name = token.name;
+    //     // @ts-ignore
+    //     session.user.email = token.email;
+    //     // @ts-ignore
+    //     session.user.image = token.picture;
+    //   }
+    //   return session;
+    // },
   },
 };

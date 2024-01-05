@@ -3,7 +3,6 @@
 import { cn, userAuthSchema } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -23,15 +22,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false);
-  const searchParams = useSearchParams();
+  const [isGoogleLoading, setIsGoogleLoading] = React.useState<boolean>(false);
+  // const searchParams = useSearchParams();
 
   async function onSubmit(data: FormData) {
     setIsLoading(true);
 
-    const signInResult = await signIn('email', {
-      email: data.email.toLowerCase(),
-      redirect: false,
-      callbackUrl: searchParams?.get('from') || '/dashboard',
+    const signInResult = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
     });
 
     setIsLoading(false);
@@ -52,7 +51,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -65,14 +64,31 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading || isGitHubLoading}
+              disabled={isLoading || isGitHubLoading || isGoogleLoading}
               {...register('email')}
             />
             {errors?.email && <p className="px-1 text-xs text-red-600">{errors.email.message}</p>}
           </div>
-          <button className={cn(buttonVariants())} disabled={isLoading}>
+
+          <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="email">
+              Password
+            </Label>
+            <Input
+              id="password"
+              placeholder="password"
+              type="password"
+              autoCapitalize="none"
+              autoComplete="password"
+              autoCorrect="off"
+              disabled={isLoading || isGitHubLoading || isGoogleLoading}
+              {...register('password')}
+            />
+            {errors?.email && <p className="px-1 text-xs text-red-600">{errors.email.message}</p>}
+          </div>
+          <button type="button" className={cn(buttonVariants())} disabled={isLoading} onClick={handleSubmit(onSubmit)}>
             {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In with Email
+            Sign In
           </button>
         </div>
       </form>
@@ -91,7 +107,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           setIsGitHubLoading(true);
           signIn('github');
         }}
-        disabled={isLoading || isGitHubLoading}
+        disabled={isLoading || isGitHubLoading || isGoogleLoading}
       >
         {isGitHubLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
@@ -99,6 +115,22 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <Icons.gitHub className="mr-2 h-4 w-4" />
         )}{' '}
         Github
+      </button>
+      <button
+        type="button"
+        className={cn(buttonVariants({ variant: 'outline' }))}
+        onClick={() => {
+          setIsGoogleLoading(true);
+          signIn('google');
+        }}
+        disabled={isLoading || isGitHubLoading || isGoogleLoading}
+      >
+        {isGitHubLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.google className="mr-2 h-4 w-4" />
+        )}{' '}
+        Google
       </button>
     </div>
   );
