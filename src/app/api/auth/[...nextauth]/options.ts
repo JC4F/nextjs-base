@@ -1,3 +1,4 @@
+import { ROLE } from '@/constants';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
@@ -29,12 +30,13 @@ export const options: NextAuthOptions = {
         },
         password: { type: 'password' },
       },
-      async authorize(credentials, _req) {
+      async authorize(credentials) {
         const payload = {
           email: credentials?.email,
           password: credentials?.password,
         };
 
+        // send auth request
         console.log(payload);
 
         return {
@@ -42,6 +44,7 @@ export const options: NextAuthOptions = {
           name: 'Peter',
           email: 'Peter@gmail.com',
           image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmuaMi2wKWYcKVIIxM1S5mdLX-i7TveCDmVZjBy2qyKw&s',
+          role: ROLE.ADMIN,
         };
 
         // const res = await fetch('https://cloudcoders.azurewebsites.net/api/tokens', {
@@ -67,33 +70,35 @@ export const options: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      const provider = account?.provider;
+      if (!provider) return false;
+
+      if (['google', 'github'].includes(provider)) {
+        const email = user.email;
+
+        if (!email) return false;
+
+        // send BE to login/register
+
+        user.role = ROLE.USER;
+      }
+
+      return true;
+    },
     async redirect({ url, baseUrl }) {
       // Allows relative callback URLs
       if (url.startsWith('/')) return `${baseUrl}${url}`;
-
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    // async jwt({ token, user }) {
-    //   // fetch api to be with token return from sign in to update jwt
-    //   return {
-    //     id: '',
-    //     name: '',
-    //     email: '',
-    //     picture: '',
-    //   };
-    // },
-    // async session({ token, session }) {
-    //   if (token) {
-    //     // @ts-ignore
-    //     session.user.id = token.id;
-    //     // @ts-ignore
-    //     session.user.name = token.name;
-    //     // @ts-ignore
-    //     session.user.email = token.email;
-    //     // @ts-ignore
-    //     session.user.image = token.picture;
-    //   }
-    //   return session;
-    // },
+    async jwt({ token, user }) {
+      // Persist the OAuth access_token and or the user id to the token right after signin
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
   },
 };
