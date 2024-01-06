@@ -1,23 +1,38 @@
 import { getToken } from 'next-auth/jwt';
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import { ROLE, RouteWithRoles } from './constants';
+
+const findRolesForPath = (inputPath: string): ROLE[] | null => {
+  const route = RouteWithRoles.find((route) => {
+    const regex = new RegExp(`^${route.path}$`);
+    return regex.test(inputPath);
+  });
+
+  return route ? route.roles : null;
+};
 
 export default withAuth(
   async function middleware(req) {
     const token = await getToken({ req, secret: process.env.JWT_SECRET });
-    const isAuth = !!token;
-    const isAuthPage = req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/register');
+    const pathName = req.nextUrl.pathname;
+    const isAuthPage = pathName.startsWith('/login') || pathName.startsWith('/register');
+    const roles = findRolesForPath(pathName);
 
     if (isAuthPage) {
-      if (isAuth) {
+      if (token) {
         return NextResponse.redirect(new URL('/', req.url));
       }
 
       return null;
     }
 
-    if (!isAuth) {
-      let from = req.nextUrl.pathname;
+    if (!roles) return NextResponse.redirect(new URL('/not-found', req.url));
+
+    if (roles.length === 0) return null;
+
+    if (!token) {
+      let from = pathName;
       if (req.nextUrl.search) {
         from += req.nextUrl.search;
       }
@@ -26,6 +41,10 @@ export default withAuth(
         return NextResponse.redirect(new URL(`/login?from=${encodeURIComponent(from)}`, req.url));
       } else return NextResponse.redirect(new URL(`/login`, req.url));
     }
+
+    if (!roles.includes(token.role)) return NextResponse.redirect(new URL('/not-found', req.url));
+
+    return null;
   },
   {
     callbacks: {
@@ -39,6 +58,7 @@ export default withAuth(
   },
 );
 
+// https://github.com/vercel/next.js/discussions/36308
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: '/((?!api|static|.*\\..*|_next).*)',
 };
