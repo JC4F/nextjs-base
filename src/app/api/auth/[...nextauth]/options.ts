@@ -11,7 +11,6 @@ export const options: NextAuthOptions = {
   secret: process.env.JWT_SECRET,
   pages: {
     signIn: '/login',
-    // signOut: "/singOut",
   },
   providers: [
     GitHubProvider({
@@ -45,27 +44,8 @@ export const options: NextAuthOptions = {
           email: 'Peter@gmail.com',
           image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmuaMi2wKWYcKVIIxM1S5mdLX-i7TveCDmVZjBy2qyKw&s',
           role: ROLE.ADMIN,
+          accessToken: 'Token From Be',
         };
-
-        // const res = await fetch('https://cloudcoders.azurewebsites.net/api/tokens', {
-        //   method: 'POST',
-        //   body: JSON.stringify(payload),
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        // });
-
-        // const user = await res.json();
-        // if (!res.ok) {
-        //   throw new Error(user.message);
-        // }
-        // // If no error and we have user data, return it
-        // if (res.ok && user) {
-        //   return user;
-        // }
-
-        // // Return null if user data could not be retrieved
-        // return null;
       },
     }),
   ],
@@ -79,9 +59,10 @@ export const options: NextAuthOptions = {
 
         if (!email) return false;
 
-        // send BE to login/register
+        // send BE to login/register with secret key => get role, access token
 
         user.role = ROLE.USER;
+        user.accessToken = 'Token From Be';
       }
 
       return true;
@@ -97,8 +78,18 @@ export const options: NextAuthOptions = {
       // Persist the OAuth access_token and or the user id to the token right after signin
       if (user) {
         token.role = user.role;
+        token.accessToken = user.accessToken;
       }
       return token;
+    },
+    async session({ session, token }) {
+      // Send properties to the client, like an access_token and user id from a provider.
+      if (token && session.user) {
+        session.user.role = token.role;
+        session.user.accessToken = token.accessToken;
+      }
+
+      return session;
     },
   },
 };

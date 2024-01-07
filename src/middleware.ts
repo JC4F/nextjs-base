@@ -14,6 +14,7 @@ const findRolesForPath = (inputPath: string): ROLE[] | null => {
 
 export default withAuth(
   async function middleware(req) {
+    // handle page
     const token = await getToken({ req, secret: process.env.JWT_SECRET });
     const pathName = req.nextUrl.pathname;
     const isAuthPage = pathName.startsWith('/login') || pathName.startsWith('/register');
