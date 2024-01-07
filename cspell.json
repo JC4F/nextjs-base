@@ -20,7 +20,7 @@
     "settings.json"
   ],
   // words - list of words to be always considered correct
-  "words": ["clsx", "commitlint", "hookform", "lucide", "nextauth", "signin", "tailwindcss", "Vercel"],
+  "words": ["clsx", "commitlint", "hookform", "lucide", "nextauth", "signin", "tailwindcss", "toastify", "Vercel"],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.
   "flagWords": []

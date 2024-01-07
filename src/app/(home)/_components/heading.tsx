@@ -1,12 +1,25 @@
 'use client';
 
 import { Button, Spinner } from '@/components';
+import { customFetch } from '@/lib';
 import { ArrowRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 export const Heading = () => {
   const { status } = useSession();
+
+  const onCLick = async () => {
+    const result = await customFetch('https://dummyjson.com/products/1');
+
+    console.log(result);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+  };
 
   return (
     <div className="max-w-3xl space-y-4">
@@ -31,13 +44,16 @@ export const Heading = () => {
         </Button>
       )}
       {status === 'unauthenticated' && (
-        // <SignInButton mode="modal">
         <Button>
           Get Notion free
           <ArrowRight className="h-4 w-4 ml-2" />
         </Button>
-        //        </SignInButton>
       )}
+
+      <Button onClick={onCLick} className="ml-2" variant={'outline'}>
+        Fetch Data
+        <ArrowRight className="h-4 w-4 ml-2" />
+      </Button>
     </div>
   );
 };
