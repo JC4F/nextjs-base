@@ -1,15 +1,9 @@
 import { withAuth } from 'next-auth/middleware';
-import { NextResponse } from 'next/server';
-import { authenticationMiddleware, i18nMiddleware } from './middlewares';
+import { authenticationMiddleware } from './middlewares';
 
 export default withAuth(
   async function middleware(req) {
-    const pathName = req.nextUrl.pathname;
-
-    await authenticationMiddleware({ req, pathName });
-    await i18nMiddleware({ req, pathName });
-
-    return NextResponse.next();
+    return await authenticationMiddleware(req);
   },
   {
     callbacks: {

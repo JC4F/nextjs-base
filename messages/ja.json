@@ -1,0 +1,47 @@
+{
+  "home": {
+    "login": "ログイン",
+    "sign_out": "サインアウト",
+    "title": "売上見積もり",
+    "get_sale": "売上見積もりを取得",
+    "enter_sale": "売上を入力",
+    "fetch_data": "データを取得",
+    "welcome": "アイデア、文書、計画。統合されたあなたの作業場所へようこそ。",
+    "description": "Notionは、より良く、より速く作業が行われるつながったワークスペースです。",
+    "privacy": "プライバシーポリシー",
+    "term": "利用規約",
+    "locale_toggle": "ロケール",
+    "english": "英語",
+    "japanese": "日本語",
+    "theme_toggle": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク"
+  },
+  "auth": {
+    "back": "戻る",
+    "login": "ログイン",
+    "email": "メール",
+    "password": "パスワード",
+    "welcome_back": "お帰りなさい",
+    "login_description": "アカウントにサインインするためにメールアドレスを入力してください",
+    "don_not_have_account": "アカウントをお持ちでないですか？ サインアップ",
+    "create_account": "アカウントを作成",
+    "register_description": "アカウントを作成するためにメールアドレスを入力してください",
+    "agree_condition": "続行すると、当社の",
+    "privacy": "プライバシーポリシー",
+    "term": "利用規約",
+    "or_continue_with": "または続行する",
+    "sign_in": "サインイン"
+  },
+  "client": {
+    "title": "クライアントコンポーネント"
+  },
+  "server": {
+    "title": "サーバーコンポーネント"
+  },
+  "route": {
+    "client": "クライアント",
+    "nested_client": "ネストしたクライアント",
+    "server": "サーバー"
+  }
+}

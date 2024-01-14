@@ -4,6 +4,7 @@ import { User } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
+import { UserAvatar } from '@/app/[locale]/_components/user-avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { UserAvatar } from '@/components/user-avatar';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<User, 'name' | 'image' | 'email'>;
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
+  const translation = useTranslations();
+  const locale = useLocale();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -32,13 +36,13 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard">Dashboard</Link>
+          <Link href={`/${locale}/client`}>{translation('route.client')}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/billing">Billing</Link>
+          <Link href={`/${locale}/client/123`}>{translation('route.nested_client')}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings">Settings</Link>
+          <Link href={`/${locale}/server`}>{translation('route.server')}</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -46,11 +50,11 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           onSelect={(event) => {
             event.preventDefault();
             signOut({
-              callbackUrl: `${window.location.origin}/login`,
+              callbackUrl: `${window.location.origin}/${locale}/login`,
             });
           }}
         >
-          Sign out
+          {translation('home.sign_out')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

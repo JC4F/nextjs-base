@@ -9,9 +9,6 @@ export const options: NextAuthOptions = {
     strategy: 'jwt',
   },
   secret: process.env.JWT_SECRET,
-  pages: {
-    signIn: '/login',
-  },
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,

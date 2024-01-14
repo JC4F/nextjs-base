@@ -2,18 +2,22 @@ import { findRolesForPath } from '@/lib';
 import { getToken } from 'next-auth/jwt';
 import { NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import { intlMiddleware } from '.';
 
-type AuthenticationMiddlewareParams = { req: NextRequestWithAuth; pathName: string };
+export const authenticationMiddleware = async (req: NextRequestWithAuth) => {
+  const pathName = req.nextUrl.pathname;
 
-export const authenticationMiddleware = async ({ req, pathName }: AuthenticationMiddlewareParams) => {
+  const [, locale] = pathName.split('/');
+  console.log(locale, pathName);
   const token = await getToken({ req, secret: process.env.JWT_SECRET });
 
-  const isAuthPage = pathName.startsWith('/login') || pathName.startsWith('/register');
+  const isAuthPage = pathName.startsWith(`/${locale}/login`) || pathName.startsWith(`${locale}/register`);
   const roles = findRolesForPath(pathName);
+  console.log(roles);
 
   if (isAuthPage) {
     if (token) {
-      return NextResponse.redirect(new URL('/', req.url));
+      return NextResponse.redirect(new URL(`/${locale}`, req.url));
     }
 
     return NextResponse.next();
@@ -22,7 +26,7 @@ export const authenticationMiddleware = async ({ req, pathName }: Authentication
   if (!roles) return NextResponse.redirect(new URL('/not-found', req.url));
 
   // route with no require role ~ public
-  if (roles.length === 0) return NextResponse.next();
+  if (roles.length === 0) return intlMiddleware(req);
 
   // no public, require authenticated
   if (!token) {
@@ -31,10 +35,12 @@ export const authenticationMiddleware = async ({ req, pathName }: Authentication
       from += req.nextUrl.search;
     }
 
-    if (from !== '/') {
-      return NextResponse.redirect(new URL(`/login?from=${encodeURIComponent(from)}`, req.url));
-    } else return NextResponse.redirect(new URL(`/login`, req.url));
+    if (from !== `/${locale}` || from !== '/') {
+      return NextResponse.redirect(new URL(`/${locale}/login?from=${encodeURIComponent(from)}`, req.url));
+    } else return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
   }
 
   if (!roles.includes(token.role)) return NextResponse.redirect(new URL('/not-found', req.url));
+
+  return intlMiddleware(req);
 };

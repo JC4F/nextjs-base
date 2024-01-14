@@ -5,11 +5,17 @@ import Link from 'next/link';
 import { useScrollTop } from '@/hooks';
 import { cn } from '@/lib/utils';
 
-import { Button, ModeToggle, Spinner, UserAccountNav } from '@/components';
+import { Button, Spinner } from '@/components';
 import { useSession } from 'next-auth/react';
+import { useLocale, useTranslations } from 'next-intl';
+import { LocaleToggle } from './locale-toggle';
 import { Logo } from './logo';
+import { ThemeToggle } from './theme-toggle';
+import { UserAccountNav } from './user-account-nav';
 
 export const Navbar = () => {
+  const translation = useTranslations('home');
+  const locale = useLocale();
   const { status, data: session } = useSession();
   const scrolled = useScrollTop();
 
@@ -20,15 +26,18 @@ export const Navbar = () => {
         scrolled && 'border-b shadow-sm',
       )}
     >
-      <Logo />
+      <Link href={`/${locale}`}>
+        <Logo />
+      </Link>
+
       <div className="md:ml-auto md:justify-end justify-between w-full flex items-center gap-x-2">
         {status === 'loading' && <Spinner />}
         {status === 'unauthenticated' && (
           <>
             <Button variant="ghost" size="sm">
-              <Link href="/login">Login</Link>
+              <Link href={`/${locale}/login`}>{translation('login')}</Link>
             </Button>
-            <Button size="sm">Get Notion free</Button>
+            <Button size="sm">{translation('get_sale')}</Button>
           </>
         )}
         {status === 'authenticated' && (
@@ -41,11 +50,12 @@ export const Navbar = () => {
               }}
             />
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/documents">Enter Notion</Link>
+              <Link href={`/${locale}/client`}>{translation('enter_sale')}</Link>
             </Button>
           </>
         )}
-        <ModeToggle />
+        <ThemeToggle />
+        <LocaleToggle />
       </div>
     </div>
   );

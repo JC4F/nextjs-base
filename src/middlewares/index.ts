@@ -1,2 +1,2 @@
 export * from './authenticate';
-export * from './i18n';
+export * from './intl';
