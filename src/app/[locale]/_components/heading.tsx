@@ -29,7 +29,7 @@ export const Heading = () => {
       <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold">
         {translation('welcome')} <span className="underline">{translation('title')}</span>
       </h1>
-      <h3 className="text-base sm:text-xl md:text-2xl font-medium">{translation('description')}</h3>
+      <h3 className="text-base sm:text-xl md:text-2xl font-medium" dangerouslySetInnerHTML={{__html: translation('description')}}></h3>
       {status === 'loading' && (
         <div className="w-full flex items-center justify-center">
           <Spinner size="lg" />

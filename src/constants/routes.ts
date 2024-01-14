@@ -24,6 +24,14 @@ export const RouteWithRoles: Route[] = [
     roles: [],
   },
   {
+    path: '/login',
+    roles: [],
+  },
+  {
+    path: '/register',
+    roles: [],
+  },
+  {
     path: '/',
     roles: [],
   },

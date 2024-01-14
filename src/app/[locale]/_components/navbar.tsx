@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 import { useScrollTop } from '@/hooks';
-import { cn } from '@/lib/utils';
+import { cn, usePathname } from '@/lib';
 
 import { Button, Spinner } from '@/components';
 import { useSession } from 'next-auth/react';
@@ -16,6 +16,7 @@ import { UserAccountNav } from './user-account-nav';
 export const Navbar = () => {
   const translation = useTranslations('home');
   const locale = useLocale();
+  const pathName = usePathname();
   const { status, data: session } = useSession();
   const scrolled = useScrollTop();
 
@@ -32,7 +33,7 @@ export const Navbar = () => {
 
       <div className="md:ml-auto md:justify-end justify-between w-full flex items-center gap-x-2">
         {status === 'loading' && <Spinner />}
-        {status === 'unauthenticated' && (
+        {status === 'unauthenticated' && !['/login', '/register'].includes(pathName) && (
           <>
             <Button variant="ghost" size="sm">
               <Link href={`/${locale}/login`}>{translation('login')}</Link>
@@ -47,6 +48,7 @@ export const Navbar = () => {
                 name: session.user?.name,
                 image: session.user?.image,
                 email: session.user?.email,
+                role: session.user?.role,
               }}
             />
             <Button variant="ghost" size="sm" asChild>

@@ -12,10 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { findRolesForPath } from '@/lib';
 import { useLocale, useTranslations } from 'next-intl';
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  user: Pick<User, 'name' | 'image' | 'email'>;
+  user: Pick<User, 'name' | 'image' | 'email' | 'role'>;
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
@@ -35,15 +36,27 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href={`/${locale}/client`}>{translation('route.client')}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={`/${locale}/client/123`}>{translation('route.nested_client')}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={`/${locale}/server`}>{translation('route.server')}</Link>
-        </DropdownMenuItem>
+        {(findRolesForPath('/client')?.length === 0 || findRolesForPath('/client')?.includes(user.role)) && (
+          <DropdownMenuItem asChild>
+            <Link className="cursor-pointer" href={`/${locale}/client`}>
+              {translation('route.client')}
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {(findRolesForPath('/client/123')?.length === 0 || findRolesForPath('/client/123')?.includes(user.role)) && (
+          <DropdownMenuItem asChild>
+            <Link className="cursor-pointer" href={`/${locale}/client/123`}>
+              {translation('route.nested_client')}
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {(findRolesForPath('/server')?.length === 0 || findRolesForPath('/server')?.includes(user.role)) && (
+          <DropdownMenuItem asChild>
+            <Link className="cursor-pointer" href={`/${locale}/server`}>
+              {translation('route.server')}
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"

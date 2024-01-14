@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { Icons, Input, Label, buttonVariants } from '../../../components';
+import { Icons, Input, Label, buttonVariants } from '../../../../components';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -33,6 +33,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     const signInResult = await signIn('credentials', {
       email: data.email,
       password: data.password,
+      callbackUrl: window.location.origin,
     });
 
     setIsLoading(false);
@@ -94,7 +95,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         className={cn(buttonVariants({ variant: 'outline' }))}
         onClick={() => {
           setIsGitHubLoading(true);
-          signIn('github');
+          signIn('github', {
+            callbackUrl: window.location.origin,
+          });
         }}
         disabled={isLoading || isGitHubLoading || isGoogleLoading}
       >
@@ -110,7 +113,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         className={cn(buttonVariants({ variant: 'outline' }))}
         onClick={() => {
           setIsGoogleLoading(true);
-          signIn('google');
+          signIn('google', {
+            callbackUrl: window.location.origin,
+          });
         }}
         disabled={isLoading || isGitHubLoading || isGoogleLoading}
       >

@@ -8,19 +8,18 @@ export const authenticationMiddleware = async (req: NextRequestWithAuth) => {
   const pathName = req.nextUrl.pathname;
 
   const [, locale] = pathName.split('/');
-  console.log(locale, pathName);
   const token = await getToken({ req, secret: process.env.JWT_SECRET });
 
-  const isAuthPage = pathName.startsWith(`/${locale}/login`) || pathName.startsWith(`${locale}/register`);
+  const isAuthPage = pathName.includes(`/login`) || pathName.includes(`/register`);
   const roles = findRolesForPath(pathName);
-  console.log(roles);
+  // console.log(locale, pathName, roles, req.url);
 
   if (isAuthPage) {
     if (token) {
-      return NextResponse.redirect(new URL(`/${locale}`, req.url));
+      return NextResponse.redirect(new URL(req.nextUrl.origin));
     }
 
-    return NextResponse.next();
+    return intlMiddleware(req);
   }
 
   if (!roles) return NextResponse.redirect(new URL('/not-found', req.url));

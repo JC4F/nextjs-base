@@ -14,7 +14,7 @@ export function LocaleToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
-          <Languages className="h-[1.2rem] w-[1.2rem]" />
+          <Languages className="h-max w-max" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

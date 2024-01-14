@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 
-import { UserAuthForm } from '@/app/[locale]/_components/user-auth-form';
+import { UserAuthForm } from '@/app/[locale]/(auth)/_components/user-auth-form';
 import { Icons } from '@/components/icons';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,7 +17,7 @@ export default function LoginPage() {
   const locale = useLocale();
 
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+    <div className="container flex h-full w-full flex-col items-center justify-center">
       <Link
         href={`/${locale}`}
         className={cn(buttonVariants({ variant: 'ghost' }), 'absolute left-4 top-4 md:left-8 md:top-8')}

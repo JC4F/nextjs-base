@@ -1,4 +1,4 @@
-import { UserAuthForm } from '@/app/[locale]/_components/user-auth-form';
+import { UserAuthForm } from '@/app/[locale]/(auth)/_components/user-auth-form';
 import { buttonVariants, Icons } from '@/components';
 import { cn } from '@/lib';
 import { useLocale, useTranslations } from 'next-intl';
@@ -14,7 +14,7 @@ export default function RegisterPage() {
   const locale = useLocale();
 
   return (
-    <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
+    <div className="container grid h-full w-full flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
         href={`/${locale}/login`}
         className={cn(buttonVariants({ variant: 'ghost' }), 'absolute right-4 top-4 md:right-8 md:top-8')}
