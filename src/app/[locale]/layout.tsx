@@ -1,5 +1,4 @@
 import { AuthProvider, ThemeProvider } from '@/components';
-import { locales } from '@/lib';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import { Inter } from 'next/font/google';
 import { ReactNode } from 'react';
@@ -13,9 +12,9 @@ type Props = {
   params: { locale: string };
 };
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+// export function generateStaticParams() {
+//   return locales.map((locale) => ({ locale }));
+// }
 
 const LocaleLayout = ({ children, params: { locale } }: Props) => {
   const messages = useMessages();
