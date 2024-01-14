@@ -9,9 +9,6 @@ export const options: NextAuthOptions = {
     strategy: 'jwt',
   },
   secret: process.env.JWT_SECRET,
-  pages: {
-    signIn: '/login',
-  },
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,
@@ -66,13 +63,6 @@ export const options: NextAuthOptions = {
       }
 
       return true;
-    },
-    async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
     },
     async jwt({ token, user }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
